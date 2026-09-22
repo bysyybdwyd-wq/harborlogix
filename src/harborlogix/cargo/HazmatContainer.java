@@ -13,23 +13,45 @@ import harborlogix.ops.TariffPolicy;
  */
 public class HazmatContainer extends StandardContainer {
 
-    // TODO: private final fields
+    private final int hazardClass;
+    private final boolean requiresEscort;
 
     public HazmatContainer(String unitId, Client owner, double weightKg,
                            int daysStored, double volumeM3,
                            int hazardClass, boolean requiresEscort) {
         super(unitId, owner, weightKg, daysStored, volumeM3);
-        // TODO: validate and assign
-        throw new UnsupportedOperationException("TODO HazmatContainer constructor");
+        if(hazardClass < 1 || hazardClass > 9) {
+            throw new IllegalArgumentException("hazardClass must be between 0 and 6");
+        }
+        this.hazardClass = hazardClass;
+        this.requiresEscort = requiresEscort;
     }
 
     public int getHazardClass() {
-        throw new UnsupportedOperationException("TODO getHazardClass");
+        return hazardClass;
     }
 
     public boolean isRequiresEscort() {
-        throw new UnsupportedOperationException("TODO isRequiresEscort");
+        return requiresEscort;
     }
 
-    // TODO: override dailyStorageFee(), handlingCategory(), safetyBriefing(), toString()
+    @Override
+    public double dailyStorageFee() {
+        return super.dailyStorageFee() * TariffPolicy.HAZMAT_MULTIPLIER;
+    }
+
+    @Override
+    public String  handlingCategory() {
+        return "Hazmat";
+    }
+
+    @Override
+    public String safetyBriefing() {
+        return "Hazmat Class:" +hazardClass + "Hazmat container: Ensure hazard safety protocols and protective gear are active.";
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", hazardClass=" + hazardClass + ", requiresEscort=" + requiresEscort;
+    }
 }

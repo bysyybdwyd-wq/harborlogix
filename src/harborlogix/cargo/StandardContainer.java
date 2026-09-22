@@ -13,33 +13,38 @@ import harborlogix.ops.TariffPolicy;
  */
 public class StandardContainer extends CargoUnit {
 
-    // TODO: private final double volumeM3;
+     private final double volumeM3;
 
-    public StandardContainer(String unitId, Client owner, double weightKg,
-                             int daysStored, double volumeM3) {
+    public StandardContainer(String unitId, Client owner, double weightKg, int daysStored, double volumeM3) {
         super(unitId, owner, weightKg, daysStored);
-        // TODO: validate volumeM3 > 0, then assign
-        throw new UnsupportedOperationException("TODO StandardContainer constructor");
+        if(volumeM3>0){
+            this.volumeM3 = volumeM3;
+        }else {
+            throw  new IllegalArgumentException("Volume M3 needs to be greater than 0");
+        }
     }
 
     public double getVolumeM3() {
-        throw new UnsupportedOperationException("TODO getVolumeM3");
+        return volumeM3;
     }
 
     @Override
     public double dailyStorageFee() {
-        throw new UnsupportedOperationException("TODO dailyStorageFee");
+       return TariffPolicy.BASE_STORAGE_RATE * volumeM3;
     }
 
     @Override
     public String handlingCategory() {
-        throw new UnsupportedOperationException("TODO handlingCategory");
+        return "Standard";
     }
 
     @Override
     public String safetyBriefing() {
-        throw new UnsupportedOperationException("TODO safetyBriefing");
+        return "Standard container: Check corner castings and twistlocks before lifting.";
     }
 
-    // TODO: override toString(), reusing super.toString()
+    @Override
+    public String toString() {
+        return super.toString() + ", volume=" + volumeM3;
+    }
 }

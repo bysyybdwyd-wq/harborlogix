@@ -17,25 +17,33 @@ import harborlogix.ops.TariffPolicy;
  */
 public class LiquidTank extends CargoUnit {
 
-    // TODO: private final double capacityLitres;  private double fillPercent;
+     private final double capacityLitres;
+     private double fillPercent;
 
     public LiquidTank(String unitId, Client owner, double weightKg,
                       int daysStored, double capacityLitres, double fillPercent) {
         super(unitId, owner, weightKg, daysStored);
-        // TODO: validate and assign
-        throw new UnsupportedOperationException("TODO LiquidTank constructor");
+
+        if (capacityLitres <= 0) {
+            throw new IllegalArgumentException("Capacity Litres must be greater than zero.");
+        }
+        if (fillPercent < 0 || fillPercent > 100) {
+            throw new IllegalArgumentException("Fill Percent must be greater than or egual to zero and smaller than 100.");
+        }
+        this.capacityLitres = capacityLitres;
+        this.fillPercent = fillPercent;
     }
 
     public double getCapacityLitres() {
-        throw new UnsupportedOperationException("TODO getCapacityLitres");
+        return capacityLitres;
     }
 
     public double getFillPercent() {
-        throw new UnsupportedOperationException("TODO getFillPercent");
+        return fillPercent;
     }
 
     public double currentLitres() {
-        throw new UnsupportedOperationException("TODO currentLitres");
+        return (fillPercent/100.0) * capacityLitres;
     }
 
     /**
@@ -44,23 +52,34 @@ public class LiquidTank extends CargoUnit {
      * Reject a non-positive request with IllegalArgumentException.
      */
     public double transferOut(double litres) {
-        throw new UnsupportedOperationException("TODO transferOut");
+        if (litres <= 0) {
+            throw new IllegalArgumentException("Litres to transfer must be positive.");
+        }
+        double present = currentLitres();
+        double actualMoved = Math.min(litres, present);
+        double remaining = present - actualMoved;
+
+        this.fillPercent = (remaining / capacityLitres) * 100.0;
+        return actualMoved;
     }
 
     @Override
     public double dailyStorageFee() {
-        throw new UnsupportedOperationException("TODO dailyStorageFee");
+       return currentLitres()* TariffPolicy.LIQUID_RATE;
     }
 
     @Override
     public String handlingCategory() {
-        throw new UnsupportedOperationException("TODO handlingCategory");
+        return  "Tank";
     }
 
     @Override
     public String safetyBriefing() {
-        throw new UnsupportedOperationException("TODO safetyBriefing");
+        return "Liquid Tank: Verify pressure relief valves and seal integrity before transfer.";
     }
 
-    // TODO: override toString(), reusing super.toString()
+    @Override
+    public String toString() {
+        return super.toString() + ", capacityLitres=" + capacityLitres + ", fillPercent=" + fillPercent;
+    }
 }

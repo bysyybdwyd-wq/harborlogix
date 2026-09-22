@@ -10,34 +10,47 @@ package harborlogix.clients;
  */
 public class Client {
 
+    private final String name;
+    private final String clientId;
+
     // TODO: private final fields for clientId and name
 
     public Client(String clientId, String name) {
         // TODO: validate both (non-null, non-blank) and assign
-        throw new UnsupportedOperationException("TODO Client constructor");
+        if(name==null || name.isBlank()){
+            throw new IllegalArgumentException("name can not be null  or blank");
+        }
+        if(clientId==null || clientId.isBlank()){
+            throw new IllegalArgumentException("clientId can not be null   or blank");
+        }
+        this.name = name;
+        this.clientId = clientId;
     }
 
     public String getClientId() {
-        throw new UnsupportedOperationException("TODO getClientId");
+        return clientId;
     }
 
     public String getName() {
-        throw new UnsupportedOperationException("TODO getName");
+        return  name;
     }
 
     /** Walk-in clients get no discount. Subclasses may override. */
     public double discountPercent() {
-        throw new UnsupportedOperationException("TODO discountPercent");
+        return  0.0;
     }
 
     public String clientTier() {
-        throw new UnsupportedOperationException("TODO clientTier");
+        return "Standard";
     }
 
     /** Priority clients are unloaded first. */
     public boolean priorityHandling() {
-        throw new UnsupportedOperationException("TODO priorityHandling");
+        return false;
     }
 
-    // TODO: override toString()
+    @Override
+    public String toString() {
+        return String.format("%s [%s, Tier: %s]", name, clientId, clientTier());
+    }
 }

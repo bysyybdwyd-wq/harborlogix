@@ -13,24 +13,49 @@ import harborlogix.ops.TariffPolicy;
  */
 public class RefrigeratedContainer extends StandardContainer {
 
-    // TODO: private final fields
+    private final double targetTempC;
+    private final double powerDrawKw;
 
-    public RefrigeratedContainer(String unitId, Client owner, double weightKg,
-                                 int daysStored, double volumeM3,
+    public RefrigeratedContainer(String unitId, Client owner, double weightKg, int daysStored, double volumeM3,
                                  double targetTempC, double powerDrawKw) {
         super(unitId, owner, weightKg, daysStored, volumeM3);
-        // TODO: validate and assign
-        throw new UnsupportedOperationException("TODO RefrigeratedContainer constructor");
+
+        if(targetTempC <= 8.0) {
+       this.targetTempC = targetTempC;}
+        else {
+            throw new IllegalArgumentException("targetTempC must be smaller than or equal to 8.0");
+        }
+       if (powerDrawKw > 0.0) {
+           this.powerDrawKw = powerDrawKw;
+       }else {
+           throw new IllegalArgumentException("powerDrawKw must be greater than 0.");
+       }
+
     }
 
     public double getTargetTempC() {
-        throw new UnsupportedOperationException("TODO getTargetTempC");
+        return targetTempC;
     }
 
     public double getPowerDrawKw() {
-        throw new UnsupportedOperationException("TODO getPowerDrawKw");
+        return powerDrawKw;
     }
 
-    // TODO: override dailyStorageFee() using super.dailyStorageFee()
-    // TODO: override handlingCategory(), safetyBriefing(), toString()
+    @Override
+    public double dailyStorageFee(){
+        return super.dailyStorageFee() + (TariffPolicy.POWER_RATE * powerDrawKw);
+    }
+    @Override
+    public String handlingCategory() {
+        return "Reefer";
+    }
+    @Override
+    public String safetyBriefing() {
+        return "Reefer container: Ensure continuous power supply and check target temp settings.";
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", temp=" + targetTempC + ", powerDrawKw=" + powerDrawKw;
+    }
 }

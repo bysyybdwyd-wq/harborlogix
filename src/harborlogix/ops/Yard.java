@@ -23,18 +23,33 @@ import java.util.ArrayList;
  */
 public class Yard {
 
-    // TODO: private final String yardName;
-    // TODO: private final int capacity;
-    // TODO: private final ArrayList<CargoUnit> units = new ArrayList<>();
+     private final String yardName;
+     private final int capacity;
+     private final ArrayList<CargoUnit> units = new ArrayList<>();
 
     public Yard(String yardName, int capacity) {
-        // TODO: validate and assign
-        throw new UnsupportedOperationException("TODO Yard constructor");
+       if(yardName==null || yardName.trim().isEmpty()){
+         throw  new IllegalArgumentException("Yard name cannot be null or empty");
+       }
+       if(capacity<1){
+           throw new IllegalArgumentException("Capacity cannot be less than 1");
+       }
+
+       this.yardName = yardName;
+       this.capacity = capacity;
     }
 
-    public String getYardName() { throw new UnsupportedOperationException("TODO"); }
-    public int getCapacity()    { throw new UnsupportedOperationException("TODO"); }
-    public int getUnitCount()   { throw new UnsupportedOperationException("TODO"); }
+    public String getYardName() {
+        return yardName;
+    }
+
+    public int getCapacity()    {
+        return capacity;
+    }
+
+    public int getUnitCount()   {
+        return units.size();
+    }
 
     /**
      * Returns the stored units.
@@ -42,7 +57,7 @@ public class Yard {
      * affects encapsulation, and you will be asked about it.
      */
     public ArrayList<CargoUnit> getUnits() {
-        throw new UnsupportedOperationException("TODO getUnits");
+        return new ArrayList<>(units);
     }
 
     /**
@@ -53,12 +68,27 @@ public class Yard {
      * Think about why those two situations deserve different exception types.
      */
     public void receive(CargoUnit unit) {
-        throw new UnsupportedOperationException("TODO receive");
+        if(unit == null){
+            throw  new IllegalArgumentException("Unit cannot be null");
+        }
+        for(CargoUnit cargoUnit : units) {
+            if (cargoUnit.getUnitId().equals(unit.getUnitId())) {
+                throw new IllegalArgumentException("Unit already received by this Yard");
+            }
+        }
+        if(units.size() >= capacity){
+            throw  new IllegalStateException("Cannot receive more than "+capacity+" units");
+        }
+        units.add(unit);
     }
 
     /** Sum of every unit's daily fee. */
     public double totalDailyRevenue() {
-        throw new UnsupportedOperationException("TODO totalDailyRevenue");
+        double totalDailyRevenue = 0;
+        for(CargoUnit unit : units){
+            totalDailyRevenue+= unit.dailyStorageFee();
+        }
+        return totalDailyRevenue;
     }
 
     /**
@@ -67,16 +97,35 @@ public class Yard {
      * Match clients by clientId, not by object identity.
      */
     public double invoiceFor(Client client) {
-        throw new UnsupportedOperationException("TODO invoiceFor");
+        double totalPrice = 0;
+        for(CargoUnit unit : units){
+            if(unit.getOwner().getClientId().equals(client.getClientId())){
+                totalPrice += unit.totalStorageCharge();
+            }
+        }
+        return totalPrice-totalPrice*(client.discountPercent()/100);
     }
 
     /** The heaviest unit in the yard, or null if the yard is empty. */
     public CargoUnit heaviestUnit() {
-        throw new UnsupportedOperationException("TODO heaviestUnit");
+        if(units.isEmpty()){
+            return  null;
+        }
+        CargoUnit heaviestUnit = units.get(0);
+        for(CargoUnit unit : units){
+            if(unit.getWeightKg() > heaviestUnit.getWeightKg()){
+                heaviestUnit = unit;
+            }
+        }
+        return heaviestUnit;
     }
 
     /** Prints one line per unit plus its safety briefing, then the daily revenue. */
     public void printManifest() {
-        throw new UnsupportedOperationException("TODO printManifest");
+        for(CargoUnit unit : units){
+            System.out.println(unit);
+            System.out.println(unit.safetyBriefing());
+        }
+        System.out.println(totalDailyRevenue());
     }
 }
