@@ -1,0 +1,87 @@
+
+PS C:\Users\user\IdeaProjects\HarborLogix_Starter> .\build.bat
+Build OK.
+
+  run.bat test    - acceptance test
+  run.bat app     - your demo program
+  run.bat check   - open/closed check on Yard.java
+PS C:\Users\user\IdeaProjects\HarborLogix_Starter> .\run.bat test
+HarborLogix acceptance test
+Student ID declared: 216633784
+--------------------------------------------------
+  PASS  student ID is digits only, at least 2 digits
+  PASS  BASE_STORAGE_RATE derived from D1
+  PASS  POWER_RATE derived from D2
+  PASS  HAZMAT_MULTIPLIER derived from D1
+  PASS  LIQUID_RATE derived from D2
+  PASS  OVERSIZE_DAILY_FLAT derived from D1
+  PASS  YARD_CAPACITY derived from D1
+  PASS  CargoUnit is abstract
+  PASS  RefrigeratedContainer extends StandardContainer (3 levels)
+  PASS  HazmatContainer extends StandardContainer
+  PASS  LiquidTank extends CargoUnit directly
+  PASS  totalStorageCharge() is final
+  PASS  all instance fields are private
+  PASS  standard daily fee
+  PASS  totalStorageCharge = fee x days
+  PASS  reefer fee extends parent fee
+  PASS  reefer costs more than plain container of same volume
+  PASS  hazmat fee multiplies parent fee
+  PASS  tank fee uses actual content
+  PASS  transferOut reduces the daily fee
+  PASS  dispatch through base reference reaches Reefer
+  PASS  dispatch through base reference reaches Tank
+  PASS  toString chain includes subclass detail
+  PASS  hazmat briefing states the class
+  PASS  standard client discount is 0
+  PASS  contract client discount
+  PASS  government client discount
+  PASS  government client has priority
+  PASS  standard client has no priority
+  PASS  tiers are distinct
+  PASS  yard revenue sums polymorphic fees
+  PASS  invoice applies the client's own discount
+  PASS  walk-in invoice has no discount
+  PASS  heaviestUnit returns the heaviest
+  PASS  duplicate unit ID is rejected
+  PASS  over-capacity throws IllegalStateException
+  PASS  negative weight rejected
+  PASS  zero volume rejected
+  PASS  null owner rejected
+  PASS  reefer above 8C rejected
+  PASS  hazard class 0 rejected
+  PASS  fill percent over 100 rejected
+  PASS  contract discount over 40 rejected
+  PASS  blank client name rejected
+--------------------------------------------------
+passed: 44   failed: 0
+RESULT: PASS - conformant. Design marks are assessed separately.
+PS C:\Users\user\IdeaProjects\HarborLogix_Starter> .\run.bat app
+==================================================
+HarborLogix Terminal - Student ID: 216633784
+==================================================
+
+=== SECTION 1: YARD MANIFEST ===
+ - Standard[id=U-STD-01, owner=Standard Shipping Co, 5000.0 kg, 4 days], volume=30.0
+ - Reefer[id=U-REF-01, owner=Global Trade Corp, 6000.0 kg, 3 days], volume=25.0, temp=-18.0, powerDrawKw=4.5
+ - Hazmat[id=U-HAZ-01, owner=Standard Shipping Co, 4500.0 kg, 2 days], volume=20.0, hazardClass=3, requiresEscort=true
+ - Tank[id=U-TNK-01, owner=Port Authority, 8000.0 kg, 5 days], capacityLitres=10000.0, fillPercent=80.0
+Total Daily Revenue: $1366.35
+
+=== SECTION 2: CLIENT INVOICES ===
+Client: Standard Shipping Co | Tier: Standard   | Discount:  0.0% | Total Invoice: $2256.00
+Client: Global Trade Corp    | Tier: Contract   | Discount: 20.0% | Total Invoice: $744.84
+Client: Port Authority       | Tier: Government | Discount: 25.0% | Total Invoice: $1080.00
+
+=== SECTION 3: DRAINAGE ROUND ===
+Found liquid tank: U-TNK-01
+Pumped out 3000.0 Litres. Updated fill: 50.0%
+
+=== SECTION 4: PART D - OVERSIZED CARGO ===
+Updated Yard Manifest after adding OversizedCargo:
+ - Standard[id=U-STD-01, owner=Standard Shipping Co, 5000.0 kg, 4 days], volume=30.0
+ - Reefer[id=U-REF-01, owner=Global Trade Corp, 6000.0 kg, 3 days], volume=25.0, temp=-18.0, powerDrawKw=4.5
+ - Hazmat[id=U-HAZ-01, owner=Standard Shipping Co, 4500.0 kg, 2 days], volume=20.0, hazardClass=3, requiresEscort=true
+ - Tank[id=U-TNK-01, owner=Port Authority, 8000.0 kg, 5 days], capacityLitres=10000.0, fillPercent=50.0
+ - Oversized[id=U-OVS-01, owner=Port Authority, 12000.0 kg, 3 days], lengthM=12.0, widthM=4.0, heightM=3.5
+Updated Total Daily Revenue: $1398.35
